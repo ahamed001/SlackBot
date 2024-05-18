@@ -14,6 +14,12 @@ const server = express();
 
 server.use(express.json());
 
+// Log incoming requests to verify the server is receiving requests
+server.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
 // Handle /approval-test slash command
 app.command('/approval-test', async ({ ack, body, client }) => {
   console.log('Received /approval-test command');
@@ -106,7 +112,7 @@ app.view('approval_request', async ({ ack, body, view, client }) => {
               },
               style: 'primary',
               action_id: 'approve',
-              value: `${requester}:${approvalText}`,
+              value: `${requester}:${approvalText}`, // Include requester and approval text in the value
             },
             {
               type: 'button',
@@ -116,7 +122,7 @@ app.view('approval_request', async ({ ack, body, view, client }) => {
               },
               style: 'danger',
               action_id: 'reject',
-              value: requester,
+              value: requester, // Only include requester in the value
             },
           ],
         },
